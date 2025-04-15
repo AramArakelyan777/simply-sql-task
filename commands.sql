@@ -75,3 +75,37 @@ WHERE
         WHERE
             car_features.car_id = cars.id
     );
+
+-- Extract the first 5 characters of each VIN and show them alongside the full VIN.
+SELECT
+    SUBSTRING(vin, 1, 5) as short_vin,
+    vin
+FROM
+    cars;
+
+-- Find all cars that have both 'GPS' and 'Sunroof' features.
+SELECT
+    cars.id,
+    vin,
+    features.name as feature_name
+FROM
+    cars
+    INNER JOIN car_features ON car_features.car_id = cars.id
+    INNER JOIN features ON features.id = car_features.feature_id
+WHERE
+    features.name = "GPS"
+    OR features.name = "Sunroof";
+
+-- List makes with the total number of unique features across all their cars.
+SELECT
+    makes.name,
+    COUNT(DISTINCT features.id) AS total_unique_features
+FROM
+    makes
+    JOIN models ON makes.id = models.make_id
+    JOIN cars ON models.id = cars.model_id
+    JOIN car_features ON cars.id = car_features.car_id
+    JOIN features ON car_features.feature_id = features.id
+GROUP BY
+    makes.id;
+
