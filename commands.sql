@@ -59,3 +59,19 @@ WHERE
             models.make_id = makes.id
             AND features.name = 'GPS'
     );
+
+-- Retrieve cars from models that have no features assigned (use a NOT EXISTS subquery).
+SELECT
+    models.name
+FROM
+    models
+    JOIN cars ON models.id = cars.model_id
+WHERE
+    NOT EXISTS (
+        SELECT
+            1
+        FROM
+            car_features
+        WHERE
+            car_features.car_id = cars.id
+    );
