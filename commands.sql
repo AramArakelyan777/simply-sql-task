@@ -109,3 +109,29 @@ FROM
 GROUP BY
     makes.id;
 
+-- Retrieve cars that have more than 2 features, along with a concatenated list of feature names.
+SELECT
+    cars.id AS car_id,
+    cars.price,
+    cars.year,
+    makes.name AS make,
+    models.name AS model,
+    GROUP_CONCAT (
+        features.name
+        ORDER BY
+            features.name SEPARATOR ', '
+    ) AS feature_names
+FROM
+    cars
+    JOIN car_features ON cars.id = car_features.car_id
+    JOIN features ON car_features.feature_id = features.id
+    JOIN models ON cars.model_id = models.id
+    JOIN makes ON models.make_id = makes.id
+GROUP BY
+    cars.id,
+    cars.price,
+    cars.year,
+    makes.name,
+    models.name
+HAVING
+    COUNT(features.id) > 2;
