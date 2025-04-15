@@ -40,3 +40,22 @@ GROUP BY
     models.name
 HAVING
     `count` > 1;
+
+-- List makes that have at least one car with the 'GPS' feature.
+SELECT
+    `name` AS make_name
+FROM
+    makes
+WHERE
+    EXISTS (
+        SELECT
+            1
+        FROM
+            models
+            JOIN cars ON cars.model_id = models.id
+            JOIN car_features ON car_features.car_id = cars.id
+            JOIN features ON features.id = car_features.feature_id
+        WHERE
+            models.make_id = makes.id
+            AND features.name = 'GPS'
+    );
